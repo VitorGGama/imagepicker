@@ -1,4 +1,4 @@
-import { View, StatusBar, Button, Image } from "react-native";
+import { View, StatusBar, Button, Image, Text } from "react-native";
 import { useState, useEffect } from "react";
 
 /* Importando os recursos da API nativa/móvel */
@@ -28,12 +28,37 @@ export default function App() {
     verificaPermissoes();
   }, []);
 
+  /* Ao pressionar o botão, executa esta função: */
+  const escolherFoto = async () => {
+    /* Acessando via ImagePicker a biblioteca 
+    para seleção de apenas imagens, com recurso de edição habilitado,
+    proporção 16,9 e qualidade total. */
+    const resultado = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 1,
+    });
+
+    /* Se o usuário não cancelar a operação, pegamos a 
+    imagem e colocamos no state */
+    if (!resultado.canceled) {
+      setFoto(resultado.assets[0].uri);
+    }
+  };
+  console.log(foto);
+
   return (
     <>
       <StatusBar />
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Button title="Escolher foto" />
-        <Image style={{ width: 300, height: 300 }} />
+        <Button onPress={escolherFoto} title="Escolher foto" />
+
+        {foto ? (
+          <Image source={{ uri: foto }} style={{ width: 300, height: 300 }} />
+        ) : (
+          <Text>Sem foto!</Text>
+        )}
       </View>
     </>
   );
