@@ -1,20 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, StatusBar, Button, Image } from "react-native";
+import { useState, useEffect } from "react";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+//Importando os recursos da API nativa/móvel
+import * as Imagepicker from "expo-image-picker";
+
+export default function App(){
+
+  /* State tradicional para armazenar a referencia da foto (quando existir) */
+  const [foto, setFoto] = useState(null);
+
+  /* State de checagem de permissões de uso (através do hook useCameraPermissions)*/
+  const [status, requestPermission] = Imagepicker.useCameraPermissions();
+
+  console.log(status);
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+  return (
+    <>
+      <StatusBar />
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Button title="Escolher foto" />
+        <Image style={{ width: 300, height: 300 }} />
+      </View>
+    </>
+  );
+}
