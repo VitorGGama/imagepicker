@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 
 /* Importando os recursos da API nativa/móvel */
 import * as ImagePicker from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library";
+import * as Sharing from "expo-sharing";
 
 export default function App() {
   /* State tradicional para armazenar a referência da foto (quando existir) */
@@ -46,15 +48,24 @@ export default function App() {
       setFoto(resultado.assets[0].uri);
     }
   };
+  console.log(foto);
 
   const acessarCamera = async () => {
+    /* Ao executar esta função quando o usuário escolhe
+    tirar uma foto, utilizamos o launchCameraAsync para
+    abrir a câmera do sistema operacional. */
     const imagem = await ImagePicker.launchCameraAsync({
       allowsEditing: false,
       aspect: [16, 9],
       quality: 0.5,
     });
 
+    /* Se o usuário não cancelar, atualizamos o state
+    com a novo foto capturada. */
     if (!imagem.canceled) {
+      /* Usando a API do MediaLibrary para salvar no
+      armazenamento físico do dispositivo */
+      await MediaLibrary.saveToLibraryAsync(imagem.assets[0].uri);
       setFoto(imagem.assets[0].uri);
     }
   };
@@ -64,7 +75,7 @@ export default function App() {
       <StatusBar />
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Button onPress={escolherFoto} title="Escolher foto" />
-        <Button onPress={acessarCamera} title="Tirar uma foto" />
+        <Button onPress={acessarCamera} title="Tirar uma nova foto" />
 
         {foto ? (
           <Image source={{ uri: foto }} style={{ width: 300, height: 300 }} />
